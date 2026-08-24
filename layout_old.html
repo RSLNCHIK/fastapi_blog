@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            {% if title %}
+                FastAPI - {{title}}
+            {% else %}  
+                FastAPI - Nothing to see here
+            {% endif %}
+        </title>
+    </head>
+
+    <body>
+        {% block content %}
+            
+        {% endblock content %}
+            
+    </body>
+</html>
