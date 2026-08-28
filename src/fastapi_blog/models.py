@@ -20,7 +20,7 @@ class User(Base):
         default=None,
     )
 
-    posts: Mapped[list[Post]] = relationship(back_populates="author")
+    posts: Mapped[list[Post]] = relationship(back_populates="author", cascade="all, delete-orphan")
 
     @property
     # property ist ein Dekorator, der eine Methode in eine Eigenschaft umwandelt. Dadurch kann die Methode wie ein Attribut aufgerufen werden, ohne dass Klammern verwendet werden müssen. In diesem Fall wird die Methode image_path() als Eigenschaft definiert, sodass sie wie ein Attribut aufgerufen werden kann, z.B. user.image_path anstelle von user.image_path().
