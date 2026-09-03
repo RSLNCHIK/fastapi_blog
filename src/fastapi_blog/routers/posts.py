@@ -5,14 +5,14 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from src.fastapi_blog import models
-from src.fastapi_blog.database import get_db
-from src.fastapi_blog.schemas import PostCreate, PostResponse, PostUpdate
+from .. import models
+from ..database import get_db
+from ..schemas import PostCreate, PostResponse, PostUpdate
+
 
 router = APIRouter()
 
 
-## get_posts
 @router.get("", response_model=list[PostResponse])
 async def get_posts(db: Annotated[AsyncSession, Depends(get_db)]):
     result = await db.execute(
@@ -22,7 +22,6 @@ async def get_posts(db: Annotated[AsyncSession, Depends(get_db)]):
     return posts
 
 
-## get_post
 @router.get("/{post_id}", response_model=PostResponse)
 async def get_post(post_id: int, db: Annotated[AsyncSession, Depends(get_db)]):
     result = await db.execute(
@@ -35,7 +34,7 @@ async def get_post(post_id: int, db: Annotated[AsyncSession, Depends(get_db)]):
         return post
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
 
-## update_post_full
+
 @router.put("/{post_id}", response_model=PostResponse)
 async def update_post_full(
     post_id: int,
@@ -68,7 +67,7 @@ async def update_post_full(
     await db.refresh(post, attribute_names=["author"])
     return post
 
-## update_post_partial
+
 @router.patch("/{post_id}", response_model=PostResponse)
 async def update_post_partial(
     post_id: int,
@@ -92,7 +91,6 @@ async def update_post_partial(
     return post
 
 
-## delete_post
 @router.delete("/{post_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_post(post_id: int, db: Annotated[AsyncSession, Depends(get_db)]):
     result = await db.execute(select(models.Post).where(models.Post.id == post_id))
@@ -107,7 +105,6 @@ async def delete_post(post_id: int, db: Annotated[AsyncSession, Depends(get_db)]
     await db.commit()
 
 
-## create_post
 @router.post(
     "",
     response_model=PostResponse,
@@ -133,4 +130,3 @@ async def create_post(post: PostCreate, db: Annotated[AsyncSession, Depends(get_
     await db.commit()
     await db.refresh(new_post, attribute_names=["author"])
     return new_post
-

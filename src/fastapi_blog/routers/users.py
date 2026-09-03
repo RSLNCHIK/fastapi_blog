@@ -5,12 +5,13 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from src.fastapi_blog import models
-from src.fastapi_blog.database import get_db
-from src.fastapi_blog.schemas import PostResponse, UserCreate, UserResponse, UserUpdate
+from .. import models
+from ..database import get_db
+from ..schemas import PostResponse, UserCreate, UserResponse, UserUpdate
 
 
 router = APIRouter()
+
 
 @router.post(
     "",
@@ -47,7 +48,7 @@ async def create_user(user: UserCreate, db: Annotated[AsyncSession, Depends(get_
     await db.refresh(new_user)
     return new_user
 
-# get user
+
 @router.get("/{user_id}", response_model=UserResponse)
 async def get_user(user_id: int, db: Annotated[AsyncSession, Depends(get_db)]):
     result = await db.execute(select(models.User).where(models.User.id == user_id))
@@ -56,7 +57,7 @@ async def get_user(user_id: int, db: Annotated[AsyncSession, Depends(get_db)]):
         return user
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
-## update_user
+
 @router.patch("/{user_id}", response_model=UserResponse)
 async def update_user(
     user_id: int,
@@ -103,7 +104,6 @@ async def update_user(
     return user
 
 
-## delete_user
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(user_id: int, db: Annotated[AsyncSession, Depends(get_db)]):
     result = await db.execute(select(models.User).where(models.User.id == user_id))
@@ -118,8 +118,6 @@ async def delete_user(user_id: int, db: Annotated[AsyncSession, Depends(get_db)]
     await db.commit()
 
 
-
-## get_user_posts
 @router.get("/{user_id}/posts", response_model=list[PostResponse])
 async def get_user_posts(user_id: int, db: Annotated[AsyncSession, Depends(get_db)]):
     result = await db.execute(select(models.User).where(models.User.id == user_id))
