@@ -15,9 +15,7 @@
         </div>
         <h2 class="article-title">{{ post.title }}</h2>
         <p class="article-content">{{ post.content }}</p>
-        <!-- Only show edit/delete options if the user is the author -->
         <!-- TODO: Add user authentication and authorization -->
-        <!-- Only show edit/delete options if user_id is 1 (TEMPORARY - until authentication) -->
         {% if post.user_id == 1 %}
           <div class="post-actions mt-3 pt-3 border-top">
             <button type="button" class="btn btn-outline-secondary me-1" data-bs-toggle="modal" data-bs-target="#editModal">Edit
